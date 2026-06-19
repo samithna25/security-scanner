@@ -3,8 +3,7 @@ import { useEffect, useState } from "react";
 import { ShieldCheck } from "lucide-react";
 import { ScanForm } from "@/components/ScanForm";
 import { ResultCard } from "@/components/ResultCard";
-import { HistoryTable } from "@/components/HistoryTable";
-import { getHistory, type ScanResult } from "@/lib/scan";
+import { type ScanResult } from "@/lib/scan";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -20,9 +19,6 @@ export const Route = createFileRoute("/")({
 
 function Home() {
   const [result, setResult] = useState<ScanResult | null>(null);
-  const [history, setHistory] = useState<ScanResult[]>([]);
-
-  useEffect(() => { setHistory(getHistory()); }, [result]);
 
   return (
     <main>
@@ -63,15 +59,7 @@ function Home() {
         </section>
       )}
 
-      {/* History */}
-      <section className="mx-auto max-w-7xl px-6 py-16 border-t border-white/5">
-        <div className="mb-6">
-          <div className="text-xs uppercase tracking-[0.25em] text-cyber-cyan mb-2">Activity</div>
-          <h2 className="font-display text-2xl sm:text-3xl font-bold">Scan History</h2>
-          <p className="text-muted-foreground mt-1 text-sm">{history.length} scan{history.length === 1 ? "" : "s"} recorded</p>
-        </div>
-        <HistoryTable items={history} />
-      </section>
+
 
       <footer className="border-t border-white/5 py-8 text-center text-xs text-muted-foreground">
         CloudSec Scanner · Built for cloud security research

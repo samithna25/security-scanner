@@ -7,7 +7,6 @@ export function Navbar() {
 
   const links = [
     { to: "/", label: "Home" },
-    { to: "/history", label: "Scan History" },
   ] as const;
 
   return (
