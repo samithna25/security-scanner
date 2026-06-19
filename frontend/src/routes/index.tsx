@@ -8,9 +8,9 @@ import { type ScanResult } from "@/lib/scan";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "CloudSec Scanner — Scan any website for security risks" },
+      { title: "SkySecure — Scan any website for security risks" },
       { name: "description", content: "Get an instant security risk score for any URL: SSL validation, suspicious pattern detection, and recommendations." },
-      { property: "og:title", content: "CloudSec Scanner" },
+      { property: "og:title", content: "SkySecure" },
       { property: "og:description", content: "Instant website security risk assessment." },
     ],
   }),
@@ -53,7 +53,7 @@ function Home() {
 
 
       <footer className="border-t border-white/5 py-8 text-center text-xs text-muted-foreground">
-        CloudSec Scanner · Built for cloud security research
+        SkySecure · Built for cloud security research
       </footer>
     </main>
   );
