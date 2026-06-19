@@ -49,7 +49,26 @@ export function ResultCard({ result }: { result: ScanResult }) {
         <div className="min-w-0">
           <div className="text-xs uppercase tracking-[0.2em] text-muted-foreground mb-1.5">Scanned Target</div>
           <h2 className="truncate font-mono text-lg sm:text-xl font-semibold">{result.url}</h2>
-          <div className="text-xs text-muted-foreground mt-1.5">{new Date(result.scannedAt).toLocaleString()}</div>
+          {result.tags && result.tags.length > 0 && (
+            <div className="flex flex-wrap gap-1.5 mt-2">
+              {result.tags.map((tag) => {
+                const isBlacklisted = tag === "Blacklisted";
+                return (
+                  <span
+                    key={tag}
+                    className={`inline-flex items-center text-[10px] uppercase font-bold tracking-wider px-2.5 py-0.5 rounded-full border ${
+                      isBlacklisted
+                        ? "bg-cyber-danger/10 text-cyber-danger border-cyber-danger/30"
+                        : "bg-cyber-warn/10 text-cyber-warn border-cyber-warn/30"
+                    }`}
+                  >
+                    {tag}
+                  </span>
+                );
+              })}
+            </div>
+          )}
+          <div className="text-xs text-muted-foreground mt-2">{new Date(result.scannedAt).toLocaleString()}</div>
         </div>
         <div className={`shrink-0 inline-flex items-center gap-2 px-3 py-1.5 rounded-full ring-1 ${r.bg} ${r.ring} ${r.color} font-semibold text-sm`}>
           <RiskIcon className="h-4 w-4" />

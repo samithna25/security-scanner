@@ -10,7 +10,7 @@ import {
 import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
-import { reportLovableError } from "../lib/lovable-error-reporting";
+import { reportScannerError } from "../lib/scanner-error-reporting";
 import { Navbar } from "../components/Navbar";
 
 function NotFoundComponent() {
@@ -29,7 +29,7 @@ function NotFoundComponent() {
 function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   console.error(error);
   const router = useRouter();
-  useEffect(() => { reportLovableError(error, { boundary: "tanstack_root_error_component" }); }, [error]);
+  useEffect(() => { reportScannerError(error, { boundary: "tanstack_root_error_component" }); }, [error]);
   return (
     <div className="flex min-h-screen items-center justify-center px-4">
       <div className="max-w-md text-center glass rounded-3xl p-10">
@@ -49,14 +49,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "CloudSec Scanner — Real-time Website Security Assessment" },
+      { title: "SkySecure — Real-time Website Security Assessment" },
       { name: "description", content: "Scan any website for SSL, suspicious patterns, and security risks. Get an instant risk score and actionable recommendations." },
-      { property: "og:title", content: "CloudSec Scanner" },
+      { property: "og:title", content: "SkySecure" },
       { property: "og:description", content: "Real-time website security assessment dashboard." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
     links: [
+      { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
       { rel: "stylesheet", href: appCss },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
