@@ -7,11 +7,24 @@ def calculate_risk_score(url, url_info, ssl_info):
     score = 100
     findings = []
     recommendations = []
+    tags = []
     
     # Extract the hostname (e.g. 'https://github.com/abc' -> 'github.com')
     parsed_url = urlparse(url)
     hostname = parsed_url.hostname or url
     is_https = parsed_url.scheme == "https"
+
+    # --- 0. Domain Blacklist Check ---
+    from scanner.keyword_db import BLACKLISTED_DOMAINS
+    if hostname.lower() in [d.lower() for d in BLACKLISTED_DOMAINS]:
+        score -= 90
+        findings.append({
+            "title": "Blacklisted Domain (Phishing / Scam)",
+            "severity": "High",
+            "description": f"The domain '{hostname}' is flagged on our blacklist of simulated phishing and malicious websites."
+        })
+        recommendations.append("Immediately leave this website. It is simulating a hazardous site and has been blacklisted.")
+        tags.append("Blacklisted")
 
     # --- 1. Protocol Check (HTTP vs HTTPS) ---
     if not is_https:
@@ -69,6 +82,11 @@ def calculate_risk_score(url, url_info, ssl_info):
             "description": threat["description"]
         })
         recommendations.append("Ensure the domain is not mimicking known brands or using credential-harvesting terms.")
+        
+        # Add the keyword to tags
+        kw_tag = threat["keyword"].capitalize()
+        if kw_tag not in tags:
+            tags.append(kw_tag)
 
     # --- 3.5 PhishTank Threat Database Check ---
     phishtank_result = check_phishtank(url)
@@ -117,8 +135,7 @@ def calculate_risk_score(url, url_info, ssl_info):
 
     # Default general best practices recommendations
     recommendations.append("Implement a robust Content-Security-Policy (CSP) to mitigate Cross-Site Scripting (XSS) attacks.")
-    
     # Remove duplicates from recommendations
     unique_recommendations = list(dict.fromkeys(recommendations))
 
-    return score, risk_level, findings, unique_recommendations
+    return score, risk_level, findings, unique_recommendations, tags

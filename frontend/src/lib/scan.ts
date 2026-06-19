@@ -14,6 +14,7 @@ export interface ScanResult {
   ssl: { valid: boolean; issuer: string; expiresInDays: number };
   findings: ScanFinding[];
   recommendations: string[];
+  tags?: string[];
   scannedAt: string;
 }
 

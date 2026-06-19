@@ -1,10 +1,30 @@
 import requests
+from urllib.parse import urlparse
+from scanner.keyword_db import is_simulated_target
 
 def fetch_url_info(url: str):
 
     # 1. Ensure the URL starts with http:// or https://
     if not url.startswith("http://") and not url.startswith("https://"):
         url = "https://" + url
+
+    # Extract hostname to check if it's a simulated domain
+    parsed = urlparse(url)
+    hostname = parsed.hostname or url
+    if ":" in hostname:
+        hostname = hostname.split(":")[0]
+
+    if is_simulated_target(hostname):
+        return {
+            "status_code": 200,
+            "headers": {
+                "Server": "nginx/1.18.0",
+                "Content-Type": "text/html; charset=UTF-8"
+            },
+            "server": "nginx/1.18.0",
+            "final_url": url,
+            "online": True
+        }
 
     # 2. Add a standard User-Agent header
     # Some web servers block default Python library requests to prevent scraping.

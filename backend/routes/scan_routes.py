@@ -39,7 +39,7 @@ def scan_endpoint():
         ssl_info = check_ssl(url)
         
         # 4. Process all findings and calculate risk score / recommendations
-        score, risk_level, findings, recommendations = calculate_risk_score(url, url_info, ssl_info)
+        score, risk_level, findings, recommendations, tags = calculate_risk_score(url, url_info, ssl_info)
         
         # 5. Format response to match the exact frontend interface (ScanResult)
         scan_result = {
@@ -54,6 +54,7 @@ def scan_endpoint():
             },
             "findings": findings,  # List of {"title": str, "severity": str, "description": str}
             "recommendations": recommendations,  # List of strings
+            "tags": tags,  # List of strings (blacklist indicators / suspicious keywords)
             "scannedAt": datetime.utcnow().isoformat() + "Z"
         }
 
