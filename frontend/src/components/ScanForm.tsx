@@ -58,11 +58,6 @@ export function ScanForm({ onResult }: Props) {
         </div>
       </div>
       {error && <p className="mt-3 text-sm text-cyber-danger pl-2">{error}</p>}
-      <p className="mt-3 text-xs text-muted-foreground pl-2">
-        Try: <button type="button" onClick={() => setUrl("https://github.com")} className="text-cyber-cyan hover:underline font-mono">github.com</button>
-        {" · "}
-        <button type="button" onClick={() => setUrl("http://login-verify-bank.example")} className="text-cyber-cyan hover:underline font-mono">login-verify-bank.example</button>
-      </p>
     </form>
   );
 }

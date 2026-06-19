@@ -25,15 +25,7 @@ function Home() {
       {/* Hero + Scan */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 grid-bg pointer-events-none" />
-        <div className="relative mx-auto max-w-3xl px-6 pt-20 pb-16 sm:pt-28 sm:pb-20 text-center">
-          <div className="inline-flex items-center gap-2 rounded-full glass px-3 py-1.5 text-xs font-medium mb-6">
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inset-0 rounded-full bg-cyber-success animate-ping opacity-75" />
-              <span className="relative h-2 w-2 rounded-full bg-cyber-success" />
-            </span>
-            Live Threat Intelligence Engine
-          </div>
-
+        <div className="relative mx-auto max-w-3xl px-6 pt-6 pb-12 sm:pt-8 sm:pb-16 text-center">
           <div className="mx-auto mb-8 grid h-20 w-20 place-items-center rounded-2xl bg-gradient-to-br from-cyber-blue to-cyber-purple shadow-[0_0_60px_rgba(124,58,237,0.45)] float-slow">
             <ShieldCheck className="h-10 w-10 text-[#0B1120]" strokeWidth={2.5} />
           </div>
@@ -43,8 +35,7 @@ function Home() {
             <span className="block text-gradient-cyber">security risks in seconds.</span>
           </h1>
           <p className="mt-5 text-base sm:text-lg text-muted-foreground max-w-xl mx-auto">
-            Inspect SSL configuration, suspicious patterns, and infrastructure signals — get an actionable risk score instantly.
-          </p>
+          SkySecure lets you check how safe a website is by scanning it for common security issues and risks. Simply enter a website URL to get an easy-to-understand security score and recommendations to help you stay safe online.          </p>
 
           <div className="mt-10 text-left">
             <ScanForm onResult={setResult} />
