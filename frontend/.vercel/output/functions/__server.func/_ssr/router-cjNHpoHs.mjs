@@ -3,7 +3,7 @@ import { n as require_jsx_runtime, r as require_react, t as QueryClientProvider 
 import { c as HeadContent, d as Outlet, f as lazyRouteComponent, g as useRouter, h as Link, m as createRootRouteWithContext, p as createFileRoute, s as Scripts, u as createRouter } from "../_libs/@tanstack/react-router+[...].mjs";
 import { t as QueryClient } from "../_libs/tanstack__query-core.mjs";
 import { r as Shield } from "../_libs/lucide-react.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/router-CMNvIMbD.js
+//#region node_modules/.nitro/vite/services/ssr/assets/router-cjNHpoHs.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 var styles_default = "/assets/styles-ir9Sa7_a.css";
@@ -190,7 +190,7 @@ function RootComponent() {
 		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Navbar, {}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Outlet, {})]
 	});
 }
-var $$splitComponentImporter = () => import("./routes-DRLhCd7V.mjs");
+var $$splitComponentImporter = () => import("./routes-C516SIv_.mjs");
 var rootRouteChildren = { IndexRoute: createFileRoute("/")({
 	head: () => ({ meta: [
 		{ title: "SkySecure — Scan any website for security risks" },
