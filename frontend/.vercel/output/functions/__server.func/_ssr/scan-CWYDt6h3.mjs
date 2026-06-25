@@ -1,5 +1,5 @@
 import { i as TSS_SERVER_FUNCTION, l as createServerFn } from "./esm-Dova13aH.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/scan-CXYiPNRt.js
+//#region node_modules/.nitro/vite/services/ssr/assets/scan-CWYDt6h3.js
 var createServerRpc = (serverFnMeta, splitImportFn) => {
 	const url = "/_serverFn/" + serverFnMeta.id;
 	return Object.assign(splitImportFn, {
@@ -308,6 +308,77 @@ async function checkPhishTank(url) {
 		};
 	}
 }
+var SAFE_BROWSING_THREAT_LABELS = {
+	MALWARE: "Malware",
+	SOCIAL_ENGINEERING: "Phishing / Social Engineering",
+	UNWANTED_SOFTWARE: "Unwanted Software",
+	POTENTIALLY_HARMFUL_APPLICATION: "Potentially Harmful Application"
+};
+async function checkGoogleSafeBrowsing(url) {
+	const apiKey = process.env.GOOGLE_SAFE_BROWSING_KEY;
+	if (!apiKey) return {
+		threats: [],
+		error: "Google Safe Browsing API key not configured"
+	};
+	const endpoint = `https://safebrowsing.googleapis.com/v4/threatMatches:find?key=${apiKey}`;
+	const requestBody = {
+		client: {
+			clientId: "skysecure-scanner",
+			clientVersion: "1.0"
+		},
+		threatInfo: {
+			threatTypes: [
+				"MALWARE",
+				"SOCIAL_ENGINEERING",
+				"UNWANTED_SOFTWARE",
+				"POTENTIALLY_HARMFUL_APPLICATION"
+			],
+			platformTypes: ["ANY_PLATFORM"],
+			threatEntryTypes: ["URL"],
+			threatEntries: [{ url }]
+		}
+	};
+	const controller = new AbortController();
+	const timeoutId = setTimeout(() => controller.abort(), 4e3);
+	try {
+		const response = await fetch(endpoint, {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify(requestBody),
+			signal: controller.signal
+		});
+		clearTimeout(timeoutId);
+		if (response.status === 400) return {
+			threats: [],
+			error: "Invalid API request (check API key or quota)"
+		};
+		if (!response.ok) return {
+			threats: [],
+			error: `Safe Browsing API error: ${response.status}`
+		};
+		const jsonData = await response.json();
+		if (!jsonData.matches || jsonData.matches.length === 0) return { threats: [] };
+		const seen = /* @__PURE__ */ new Set();
+		const threats = [];
+		for (const match of jsonData.matches) {
+			const type = match.threatType || "UNKNOWN";
+			if (!seen.has(type)) {
+				seen.add(type);
+				threats.push({
+					type,
+					label: SAFE_BROWSING_THREAT_LABELS[type] ?? type
+				});
+			}
+		}
+		return { threats };
+	} catch (err) {
+		clearTimeout(timeoutId);
+		return {
+			threats: [],
+			error: err.message
+		};
+	}
+}
 var scanWebsiteServer_createServerFn_handler = createServerRpc({
 	id: "5cc5658d589994a318f596f14b1289fc3c8fc7829910e7681bc0f5e9a7be83e5",
 	name: "scanWebsiteServer",
@@ -408,6 +479,21 @@ var scanWebsiteServer = createServerFn({ method: "POST" }).validator((url) => ur
 		});
 		if (phishtankResult.phish_detail_page) recommendations.push(`Do NOT visit this page. Review the threat details on PhishTank: ${phishtankResult.phish_detail_page}`);
 		else recommendations.push("Do NOT visit or input any credentials on this page; it is a verified phishing threat.");
+	}
+	const safeBrowsingResult = await checkGoogleSafeBrowsing(cleaned);
+	if (safeBrowsingResult.threats.length > 0) {
+		score -= 85 * safeBrowsingResult.threats.length;
+		const threatLabels = safeBrowsingResult.threats.map((t) => t.label).join(", ");
+		findings.push({
+			title: "Flagged by Google Safe Browsing",
+			severity: "High",
+			description: `Google's threat database has flagged this URL for the following threat(s): ${threatLabels}. This URL is actively blocked by Chrome, Firefox, and Safari.`
+		});
+		recommendations.push("Do NOT visit this website. It has been flagged by Google Safe Browsing as a threat to users.");
+		for (const threat of safeBrowsingResult.threats) {
+			const tag = threat.label;
+			if (!tags.includes(tag)) tags.push(tag);
+		}
 	}
 	const headersLower = {};
 	for (const [k, v] of Object.entries(urlInfo.headers)) headersLower[k.toLowerCase()] = v;
